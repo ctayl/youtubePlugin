@@ -10,6 +10,7 @@
         //create new instance of buildfire carousel viewer
         var view = null;
         WidgetFeed.videos = [];
+        WidgetFeed.viewedVideos = [];
         WidgetFeed.busy = false;
         WidgetFeed.nextPageToken = null;
         $rootScope.showFeed = true;
@@ -95,7 +96,14 @@
         var getFeedVideos = function (_playlistId) {
           Buildfire.spinner.show();
           var success = function (result) {
+            
               Buildfire.spinner.hide();
+              result.items.map(item => {
+                const isViewed = WidgetFeed.viewedVideos.indexOf(item.id) > -1;
+                item.viewed = isViewed ? true : false;
+              });
+              console.log(result);
+              
               WidgetFeed.videos = WidgetFeed.videos.length ? WidgetFeed.videos.concat(result.items) : result.items;
               WidgetFeed.nextPageToken = result.nextPageToken;
               if (WidgetFeed.videos.length < result.pageInfo.totalResults) {
@@ -166,6 +174,13 @@
         };
         DataStore.onUpdate().then(null, null, onUpdateCallback);
 
+        function markViewed(video) {
+          const isViewed = WidgetFeed.viewedVideos.indexOf(video.id) > -1;
+          if (!isViewed) {
+            WidgetFeed.viewedVideos.push(video.id);
+          }
+        }
+
         WidgetFeed.loadMore = function () {
           if (WidgetFeed.busy) return;
           WidgetFeed.busy = true;
@@ -224,6 +239,7 @@
                   }
                 });
           }else {*/
+            markViewed(video);
             video.id = video.snippet.resourceId.videoId;
             VideoCache.setCache(video);
             Location.goTo('#/video/' + video.snippet.resourceId.videoId);

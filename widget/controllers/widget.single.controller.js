@@ -14,6 +14,7 @@
           currentPlayListID = null,
           currentItemListLayout = null;
         var WidgetSingle = this;
+        WidgetSingle.frameType = buildfire.getFrameType();
         WidgetSingle.data = null;
         WidgetSingle.video = null;
         WidgetSingle.viewSource = function (link) {
@@ -27,6 +28,8 @@
 
         var init = function () {
           var success = function (result) {
+            console.info(`Frame Type: ${WidgetSingle.frameType}`);
+            
               WidgetSingle.data = result.data;
               if (!WidgetSingle.data.design)
                 WidgetSingle.data.design = {};

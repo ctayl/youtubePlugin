@@ -132,8 +132,14 @@
       };
     }])
     .run(['Location', '$location', '$rootScope', function (Location, $location, $rootScope) {
+
+      console.warn(buildfire.getFrameType());
+      
       buildfire.navigation.onBackButtonClick = function () {
         var reg = /^\/video/;
+        console.log($location.path()) && ($rootScope.contentType == "Channel Feed" || $rootScope.contentType == "Playlist Feed");
+        console.log($location.path(), $rootScope.contentType);
+        
         if (reg.test($location.path()) && ($rootScope.contentType == "Channel Feed" || $rootScope.contentType == "Playlist Feed")) {
           $rootScope.showFeed = true;
           Location.goTo('#/');
